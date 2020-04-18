@@ -41,6 +41,7 @@ group :test do
   gem 'rspec-rails', '~> 3.9'
   gem 'factory_bot_rails', '~> 5.1', '>= 5.1.1'
   gem 'ffaker', '~> 2.14'
+  gem 'shoulda-matchers', '~> 4.3'
 end
 
 # API gems
