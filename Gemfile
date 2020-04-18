@@ -39,6 +39,12 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
+group :test do
+  gem 'rspec-rails', '~> 3.9'
+  gem 'factory_bot_rails', '~> 5.1', '>= 5.1.1'
+  gem 'ffaker', '~> 2.14'
+end
+
 # API gems
 gem 'active_model_serializers', '~> 0.10.10'
 
