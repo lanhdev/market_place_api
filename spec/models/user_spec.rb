@@ -5,9 +5,10 @@ RSpec.describe User, type: :model do
 
   let(:user) { build(:user) }
 
-  it { should respond_to(:email) }
+  it { is_expected.to respond_to(:email) }
   it { is_expected.to respond_to(:password) }
   it { is_expected.to respond_to(:password_confirmation) }
+  it { is_expected.to respond_to(:auth_token) }
 
   it { is_expected.to be_valid }
 
@@ -15,4 +16,5 @@ RSpec.describe User, type: :model do
   it { should validate_uniqueness_of(:email).case_insensitive }
   it { should validate_confirmation_of(:password) }
   it { should allow_value('example@domain.com').for(:email) }
+  it { should validate_uniqueness_of(:auth_token) }
 end
