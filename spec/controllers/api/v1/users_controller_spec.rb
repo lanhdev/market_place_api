@@ -55,9 +55,13 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   end
 
   describe 'PUT/PATCH #update' do
+    before(:each) do
+      @user = FactoryBot.create(:user)
+      api_authorization_header(@user.auth_token)
+    end
+
     context 'when is successfully updated' do
       before(:each) do
-        @user = FactoryBot.create(:user)
         patch :update, params: {
           id: @user.id,
           user: { email: 'newmail@example.com' }
@@ -74,7 +78,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     context 'when is not updated' do
       before(:each) do
-        @user = FactoryBot.create(:user)
         patch :update, params: {
           id: @user.id,
           user: { email: 'bademail.com' }
@@ -98,6 +101,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   describe 'DELETE #destroy' do
     before(:each) do
       @user = FactoryBot.create(:user)
+      api_authorization_header(@user.auth_token)
       delete :destroy, params: { id: @user.id }
     end
 
