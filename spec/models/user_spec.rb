@@ -12,6 +12,8 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to be_valid }
 
+  it { should have_many(:products) }
+
   it { should validate_presence_of(:email) }
   it { should validate_uniqueness_of(:email).case_insensitive }
   it { should validate_confirmation_of(:password) }
@@ -30,6 +32,19 @@ RSpec.describe User, type: :model do
     it 'generates another token when one already has been taken' do
       user.generate_authentication_token!
       expect(user.auth_token).not_to eq existing_user.auth_token
+    end
+  end
+
+  describe '#products association' do
+    let(:product) { create(:product) }
+    let(:user) { product.user }
+
+    before do
+      user.destroy
+    end
+
+    it 'destroy the associated products on self destruct' do
+      expect { Product.find(product.id) }.to raise_error ActiveRecord::RecordNotFound
     end
   end
 end
