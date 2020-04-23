@@ -35,4 +35,42 @@ RSpec.describe Product, type: :model do
       end
     end
   end
+
+  describe '.above_or_equal_to_price' do
+    let!(:product1) { create(:product, price: 100) }
+    let!(:product2) { create(:product, price: 50) }
+    let!(:product3) { create(:product, price: 150) }
+    let!(:product4) { create(:product, price: 99) }
+
+    it 'returns products which are above or equal to the price' do
+      expect(Product.above_or_equal_to_price(100).sort).to match_array([product1, product3])
+    end
+  end
+
+  describe '.below_or_equal_to_price' do
+    let!(:product1) { create(:product, price: 100) }
+    let!(:product2) { create(:product, price: 50) }
+    let!(:product3) { create(:product, price: 150) }
+    let!(:product4) { create(:product, price: 99) }
+
+    it 'returns products which are below or equal to the price' do
+      expect(Product.below_or_equal_to_price(99).sort).to match_array([product2, product4])
+    end
+  end
+
+  describe '.recent' do
+    let!(:product1) { create(:product, price: 100) }
+    let!(:product2) { create(:product, price: 50) }
+    let!(:product3) { create(:product, price: 150) }
+    let!(:product4) { create(:product, price: 99) }
+
+    before do
+      product2.touch
+      product3.touch
+    end
+
+    it 'returns the most updated records' do
+      expect(Product.recent).to match_array([product3, product2, product4, product1])
+    end
+  end
 end
