@@ -4,23 +4,40 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
   describe 'GET #index' do
     let!(:products) { create_list(:product, 5) }
 
-    before(:each) do
-      get :index
+    context 'when is not receiving any product_ids parameter' do
+      before(:each) do
+        get :index
+      end
+
+      it 'returns 5 records from database' do
+        products_responses = json_response[:products]
+        expect(products_responses.size).to eq 5
+      end
+
+      it 'has the user as a embedded object' do
+        products_responses = json_response[:products]
+        products_responses.each do |product_response|
+          expect(product_response[:user]).to be_present
+        end
+      end
+
+      it { should respond_with 200 }
     end
 
-    it 'returns 5 records from database' do
-      products_responses = json_response[:products]
-      expect(products_responses.size).to eq 5
-    end
+    context 'when product_ids parameter is sent' do
+      before(:each) do
+        @user = FactoryBot.create(:user)
+        3.times { FactoryBot.create(:product, user: @user) }
+        get :index, params: { product_ids: @user.product_ids }
+      end
 
-    it 'has the user as a embedded object' do
-      products_responses = json_response[:products]
-      products_responses.each do |product_response|
-        expect(product_response[:user]).to be_present
+      it 'returns just products that belong to user' do
+        products_responses = json_response[:products]
+        products_responses.each do |product_response|
+          expect(product_response[:user][:email]).to eq @user.email
+        end
       end
     end
-
-    it { should respond_with 200 }
   end
 
   describe 'GET #show' do
